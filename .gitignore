@@ -1,0 +1,32 @@
+# Ignore node modules in root and all subfolders
+node_modules/
+**/node_modules/
+
+# Ignore env files
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Ignore Expo files (but NOT your app code)
+.expo/
+.expo-shared/
+
+# Ignore build output
+dist/
+build/
+web-build/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# macOS / system files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
