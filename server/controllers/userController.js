@@ -142,7 +142,7 @@ const updateUserController = async (req, res) => {
       },
       { new: true }
     );
-    console.log(JSON.stringify(updatedUser));
+    // console.log(JSON.stringify(updatedUser));
     updatedUser.password = undefined; //to not show password in response
     res.status(200).send({
       success: true,
