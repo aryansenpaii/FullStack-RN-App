@@ -1,17 +1,80 @@
-import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet, Alert } from "react-native";
+import React, { useState } from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import moment from "moment";
-const PostCard = ({ posts ,myPostScreen}) => {
+import axios from "axios";
+import {
+  useNavigation,
+  useNavigationContainerRef,
+} from "@react-navigation/native";
+import EditModal from "./EditModal";
+
+const PostCard = ({ posts, myPostScreen }) => {
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [post, setPost] = useState({});
+  const handleDeletePrompt = (id) => {
+    Alert.alert("Attention!", "Are you sure want to delete this post?", [
+      {
+        text: "Cancel",
+        onPress: () => {
+          console.log("cancel press");
+        },
+      },
+      {
+        text: "Delete",
+        onPress: () => handleDeletePost(id),
+      },
+    ]);
+  };
+
+  //delete user post data
+  const handleDeletePost = async (id) => {
+    try {
+      setLoading(true);
+      const { data } = await axios.delete(`/post/delete-post/${id}`);
+      setLoading(false);
+      alert(data?.message);
+      navigation.navigate("Home");
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      alert(error);
+    }
+  };
   return (
     <View>
       <Text style={styles.heading}>Total Posts {posts?.length}</Text>
+      {/* only render edit menu when myPosts screen is active */}
+      {myPostScreen && (
+        <EditModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          post={post}
+        />
+      )}
+      {/* mapping every post data to cards */}
       {posts?.map((post, i) => (
         <View style={styles.card} key={i}>
+          {/* only show delete and edit button on the myPosts screen */}
           {myPostScreen && (
-            <View>
-              <Text style={{textAlign:"right"}}>
-                <FontAwesome5 size={16} name="trash" color={"red"} />{" "}
+            <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+              <Text style={{ marginHorizontal: 20 }}>
+                <FontAwesome5
+                  size={16}
+                  name="pen"
+                  color={"dark blue"}
+                  onPress={() => {setPost(post),setModalVisible(true)}}
+                />{" "}
+              </Text>
+              <Text style={{ textAlign: "right" }}>
+                <FontAwesome5
+                  size={16}
+                  name="trash"
+                  color={"red"}
+                  onPress={() => handleDeletePrompt(post?._id)}
+                />{" "}
               </Text>
             </View>
           )}

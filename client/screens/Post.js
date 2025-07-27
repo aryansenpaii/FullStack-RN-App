@@ -12,9 +12,9 @@ import FooterMenu from "../components/Menus/FooterMenu";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import axios from "axios";
 
-const Post = ({navigation}) => {
+const Post = ({ navigation }) => {
   //global States
-  const [posts,setPosts]= useContext(PostContext);
+  const [posts, setPosts] = useContext(PostContext);
 
   //local states
   const [title, setTitle] = useState("");
@@ -30,11 +30,14 @@ const Post = ({navigation}) => {
       if (!description) {
         alert("Please add post Description!");
       }
-      const {data}= await axios.post('/post/create-post',{title,description})
-      setLoading(false)
-      setPosts([...posts,data?.post])
-      alert(data?.message)
-      navigation.navigate("Home")
+      const { data } = await axios.post("/post/create-post", {
+        title,
+        description,
+      });
+      setLoading(false);
+      setPosts([...posts, data?.post]);
+      alert(data?.message);
+      navigation.navigate("Home");
     } catch (error) {
       alert(error.response.data.message || error.message);
       setLoading(false);
@@ -73,16 +76,17 @@ const Post = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <View style={{ flex: 1, justifyContent: "flex-end" }}>
+      <View style={{ backgroundColor: "#ffffff" }}>
         <FooterMenu />
       </View>
     </View>
+    
   );
 };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 10,
+  
     justifyContent: "space-between",
     marginTop: 40,
   },

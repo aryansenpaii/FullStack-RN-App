@@ -99,7 +99,7 @@ const Account = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <View style={{ flex: 1, justifyContent: "flex-end" }}>
+      <View style={{ backgroundColor:"#ffffff"}}>
         <FooterMenu />
       </View>
     </View>
