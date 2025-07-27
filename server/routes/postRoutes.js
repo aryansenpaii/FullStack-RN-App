@@ -1,6 +1,6 @@
 const express= require("express");
 const { requireSignIn } = require("../controllers/userController");
-const { createPostController, getAllPostController } = require("../controllers/postController");
+const { createPostController, getAllPostController, getUserPostsController, deletePostController } = require("../controllers/postController");
 
 //router object
 const router= express.Router();
@@ -9,7 +9,13 @@ const router= express.Router();
 router.post('/create-post',requireSignIn,createPostController)
 
 //GET ALL POSTS (GET)
-router.post('/get-all-posts',getAllPostController)
+router.get('/get-all-posts',getAllPostController,)
+
+//GET USER POSTS (GET)
+router.get('/get-user-posts',requireSignIn,getUserPostsController)
+
+//DELETE POST
+router.delete('/delete-post/:id',requireSignIn,deletePostController)
 
 //export
 module.exports=router;

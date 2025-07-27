@@ -1,4 +1,4 @@
-const postModel= require('../models/postModel')
+const postModel = require("../models/postModel");
 //create post
 const createPostController = async (req, res) => {
   try {
@@ -11,18 +11,19 @@ const createPostController = async (req, res) => {
       });
     }
     //create and save post in database
-    const post = await postModel({
+    let post = await postModel({
       title,
       description,
       postedBy: req.auth._id,
     }).save();
+    // This is the fix — populate user details
+    post = await post.populate("postedBy", "_id name");
     res.status(201).send({
-        success:true,
-        message:'Post Created Successfully!!',
-        post
-    })
-    console.log(req)
-    
+      success: true,
+      message: "Post Created Successfully!!",
+      post,
+    });
+    console.log(req);
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -32,9 +33,67 @@ const createPostController = async (req, res) => {
     });
   }
 };
-
 //GET ALL POSTS CONTROLLER
-const getAllPostController = ()=>{
+const getAllPostController = async (req, res) => {
+  try {
+    const posts = await postModel
+      .find()
+      .populate("postedBy", "_id name")
+      .sort({ createdAt: -1 });
+    res.status(200).send({
+      success: true,
+      message: "All Posts Data!",
+      posts,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in GETALLPOSTS API",
+      error,
+    });
+  }
+};
+//GET ALL 'USER' POSTS CONTROLLER
+const getUserPostsController = async (req, res) => {
+  try {
+    const userPosts = await postModel.find({ postedBy: req.auth._id });
+    res.status(200).send({
+      success: true,
+      message: "user posts",
+      userPosts,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      success: false,
+      message: "Error in user POST API",
+      error,
+    });
+  }
+};
 
-}
-module.exports = { createPostController, getAllPostController };
+//DELETE POSTS
+const deletePostController = async (req,res) => {
+  try {
+    const { id } = req.params;
+    await postModel.findByIdAndDelete({_id:id})
+    res.status(200).send({
+      success:true,
+      message:"Your post has been Deleted!!"
+    })
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in DELETE POST API",
+      error,
+    });
+  }
+};
+module.exports = {
+  createPostController,
+  getAllPostController,
+  getUserPostsController,
+  deletePostController,
+};
