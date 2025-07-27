@@ -27,7 +27,7 @@ const EditModal = ({ modalVisible, setModalVisible, post }) => {
       });
       setLoading(false);
       alert(data?.message);
-      navigation.navigate("Home");
+      navigation.push("MyPosts")
     } catch (error) {
       setLoading(false);
       console.log(error);
